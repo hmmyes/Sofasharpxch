@@ -1,0 +1,281 @@
+console.log("SharpXch SofaScore Extension - Started");
+
+let lastProcessedUrl = '';
+
+function injectSofaScoreIcons() {
+    const infoIcons = document.querySelectorAll('.fa2-info-square');
+
+    infoIcons.forEach((icon) => {
+        if (icon.offsetParent === null) return;
+
+        if (!icon.dataset.sofaId) {
+            icon.dataset.sofaId = `sofa-ref-${Math.random().toString(36).substr(2, 9)}`;
+        }
+        const uniqueId = icon.dataset.sofaId;
+
+        const next = icon.nextElementSibling;
+        if (next && next.id === `link-${uniqueId}`) {
+            return;
+        }
+
+        if (next && next.classList.contains('sofascore-link')) {
+            next.remove();
+        }
+
+        const row = icon.closest('tr') || icon.closest('div[class*="row"]') || icon.closest('div[class*="match"]') || icon.closest('div[class*="event"]');
+
+        if (row) {
+            const playerNames = getPlayerNames(row);
+            if (playerNames && playerNames.length >= 2) {
+                addIcon(icon, playerNames, uniqueId);
+            }
+        } else {
+            const container = icon.parentElement?.parentElement;
+            if (container) {
+                const playerNames = getPlayerNames(container);
+                if (playerNames && playerNames.length >= 2) {
+                    addIcon(icon, playerNames, uniqueId);
+                }
+            }
+        }
+    });
+
+    if (window.location.href.includes('/market/') || window.location.href.includes('/customer/sport/')) {
+        const marketInfoContainer = document.querySelector('div[class*="marketDetailInfo"]') || document.querySelector('.biab_market-info');
+
+        if (marketInfoContainer && !marketInfoContainer.querySelector('.sofascore-link')) {
+            const playerNames = getPlayerNamesFromTitle();
+
+            if (playerNames && playerNames.length >= 2) {
+                const link = document.createElement('a');
+                const query = `site:sofascore.com ${playerNames[0]} ${playerNames[1]}`;
+                link.href = `https://www.google.com/search?q=${encodeURIComponent(query)}&btnI=1`;
+                link.target = '_blank';
+                link.className = 'sofascore-link';
+                link.title = `SofaScore: ${playerNames.join(' vs ')}`;
+                link.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin-left:10px;vertical-align:middle;cursor:pointer;float:right;';
+
+                const img = document.createElement('img');
+                img.src = chrome.runtime.getURL('logo_final.png');
+                img.style.cssText = 'width:24px;height:24px;object-fit:contain;border:none;display:block;';
+                img.onerror = function () {
+                    this.style.display = 'none';
+                    link.textContent = 'S';
+                    link.style.cssText += 'color:#fff;font-weight:bold;font-size:18px;background-color:#374df5;width:28px;height:28px;border-radius:4px;text-align:center;line-height:28px;';
+                };
+
+                link.appendChild(img);
+                link.addEventListener('click', (e) => e.stopPropagation());
+                marketInfoContainer.appendChild(link);
+            }
+        }
+    }
+}
+
+function getPlayerNamesFromTitle() {
+    const allH1 = document.querySelectorAll('h1');
+    const allH2 = document.querySelectorAll('h2');
+
+    for (let h of allH1) {
+        const text = h.innerText?.trim();
+        if (text && text.length > 5) {
+            const result = extractNamesFromText(text);
+            if (result) return result;
+        }
+    }
+
+    for (let h of allH2) {
+        const text = h.innerText?.trim();
+        if (text && text.length > 5) {
+            const result = extractNamesFromText(text);
+            if (result) return result;
+        }
+    }
+
+    return null;
+}
+
+function extractNamesFromText(text) {
+    if (!text) return null;
+    text = text.replace(/starting\s+in\s+\d+\s+(minute|minutes)/gi, '').replace(/finished/gi, '').replace(/set\s+\d+/gi, '').replace(/\d+h\d+/gi, '').trim();
+    const parts = text.split(/\s+(?:vs\.?|v\.?|@|-)\s+/i);
+    if (parts.length >= 2) return [parts[0].trim(), parts[1].trim()];
+    return null;
+}
+
+function getPlayerNames(row) {
+    let candidates = [];
+    const elements = row.querySelectorAll('*');
+    elements.forEach(el => {
+        if (el.offsetParent === null) return;
+        if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
+        if (el.classList.contains('fa2-info-square')) return;
+        if (el.closest('.sofascore-link')) return;
+        if (el.children.length === 0) {
+            const text = el.innerText.trim();
+            if (text.length < 3) return;
+            if (/^[\d\s:.,\-%+]+$/.test(text)) return;
+            if (['In-Play', 'Matched', '€', 'Back', 'Lay', 'Suspended', 'Active', 'Liability', 'Cash Out'].some(k => text.includes(k))) return;
+            if (/[a-zA-Z]/.test(text)) {
+                if (!candidates.includes(text)) candidates.push(text);
+            }
+        }
+    });
+    candidates.sort((a, b) => b.length - a.length);
+    return candidates.slice(0, 2);
+}
+
+function addIcon(targetElement, names, uniqueId) {
+    const link = document.createElement('a');
+    const query = `site:sofascore.com ${names[0]} ${names[1]}`;
+    link.href = `https://www.google.com/search?q=${encodeURIComponent(query)}&btnI=1`;
+    link.target = '_blank';
+    link.className = 'sofascore-link';
+    link.id = `link-${uniqueId}`;
+    link.title = `SofaScore: ${names.join(' vs ')}`;
+    link.style.cssText = 'display:inline-flex;align-items:center;text-decoration:none;margin-left:5px;';
+
+    const img = document.createElement('img');
+    img.src = chrome.runtime.getURL('logo_final.png');
+    img.style.cssText = 'width:18px;height:18px;object-fit:contain;border:none;display:block;';
+    link.appendChild(img);
+    link.addEventListener('click', (e) => e.stopPropagation());
+
+    if (targetElement.parentNode) {
+        targetElement.parentNode.insertBefore(link, targetElement.nextSibling);
+    }
+}
+
+// ===== SETTINGS STATE =====
+let betPersistenceEnabled = true;
+chrome.storage.sync.get(['betPersistence'], (result) => {
+    betPersistenceEnabled = result.betPersistence !== undefined ? result.betPersistence : true;
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'toggleBetPersistence') {
+        betPersistenceEnabled = message.enabled;
+        if (!betPersistenceEnabled) {
+            betInputValues.clear();
+            userIsClearing.clear();
+        }
+    }
+});
+
+// ===== BET INPUT PERSISTENCE =====
+const betInputValues = new Map();
+const userIsClearing = new Map();
+
+function preserveBetInputs() {
+    if (!betPersistenceEnabled) return;
+    const betInputs = document.querySelectorAll('input[id*="SIZE"], input.biab_form-input, input[class*="biab_form-input"]');
+
+    betInputs.forEach((input) => {
+        if (input.dataset.persistenceActive) return;
+        input.dataset.persistenceActive = 'true';
+
+        input.addEventListener('input', (e) => {
+            const value = e.target.value;
+            if (value && value.trim() !== '') betInputValues.set(input, value);
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' || e.key === 'Delete' || (e.ctrlKey && e.key === 'a')) {
+                userIsClearing.set(input, true);
+                setTimeout(() => userIsClearing.delete(input), 100);
+            }
+        });
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                    const currentValue = input.value;
+                    const savedValue = betInputValues.get(input);
+                    if (!currentValue && savedValue && !userIsClearing.has(input)) {
+                        input.value = savedValue;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }
+            });
+        });
+        observer.observe(input, { attributes: true, attributeFilter: ['value'] });
+
+        let lastValue = input.value;
+        const checkInterval = setInterval(() => {
+            if (!document.contains(input)) {
+                clearInterval(checkInterval);
+                betInputValues.delete(input);
+                userIsClearing.delete(input);
+                return;
+            }
+            const currentValue = input.value;
+            if (!currentValue && lastValue && !userIsClearing.has(input)) {
+                const savedValue = betInputValues.get(input);
+                if (savedValue) {
+                    input.value = savedValue;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            }
+            lastValue = currentValue;
+        }, 100);
+    });
+}
+
+// ===== COLLAPSIBLE SETTINGS BOX =====
+function makeSettingsCollapsible() {
+
+    if (window.getComputedStyle(container).position === 'static') {
+        container.style.position = 'relative';
+    }
+
+    const contentDiv = document.createElement('div');
+    contentDiv.style.transition = 'all 0.3s ease';
+
+    while (container.firstChild) {
+        contentDiv.appendChild(container.firstChild);
+    }
+
+    container.appendChild(toggleBtn);
+    container.appendChild(contentDiv);
+
+    const isCollapsed = localStorage.getItem('sharpXch_settings_collapsed') === 'true';
+
+    if (isCollapsed) {
+        contentDiv.style.display = 'none';
+        toggleBtn.innerHTML = '◀';
+        toggleBtn.title = 'Show Settings';
+        container.style.minHeight = '20px';
+    } else {
+        contentDiv.style.display = 'block';
+        toggleBtn.innerHTML = '▼';
+        toggleBtn.title = 'Hide Settings';
+        container.style.minHeight = '0';
+    }
+
+    toggleBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isHidden = contentDiv.style.display === 'none';
+
+        if (isHidden) {
+            contentDiv.style.display = 'block';
+            toggleBtn.innerHTML = '▼';
+            toggleBtn.title = 'Hide Settings';
+            container.style.minHeight = '0';
+            localStorage.setItem('sharpXch_settings_collapsed', 'false');
+        } else {
+            contentDiv.style.display = 'none';
+            toggleBtn.innerHTML = '◀';
+            toggleBtn.title = 'Show Settings';
+            container.style.minHeight = '20px';
+            localStorage.setItem('sharpXch_settings_collapsed', 'true');
+        }
+    });
+
+    console.log('✅ Settings box collapsible');
+}
+}
+
+setInterval(injectSofaScoreIcons, 1000);
+setInterval(preserveBetInputs, 500);
+setInterval(makeSettingsCollapsible, 1000);

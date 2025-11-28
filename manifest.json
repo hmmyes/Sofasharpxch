@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "SharpXch SofaScore Linker",
+  "version": "2.2",
+  "description": "Adds a SofaScore link next to matches on SharpXch.",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.sharpxch.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "logo_final.png",
+        "icon16.png",
+        "icon48.png",
+        "icon128.png"
+      ],
+      "matches": [
+        "*://*.sharpxch.com/*"
+      ]
+    }
+  ],
+  "permissions": [
+    "storage"
+  ]
+}

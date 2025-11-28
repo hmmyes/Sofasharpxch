@@ -1,0 +1,16 @@
+/* SharpXch SofaScore Extension Styles */
+
+.sofascore-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    margin-left: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+    float: right;
+}
+
+.sofascore-link:hover {
+    opacity: 0.8;
+}

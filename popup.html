@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharpXch Extension</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="popup-container">
+        <div class="header">
+            <h1>SharpXch Extension</h1>
+            <div class="version">v4.2</div>
+        </div>
+
+        <div class="settings">
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-title">Bahis Miktarlarını Koru</div>
+                    <div class="setting-description">Oranlar değiştiğinde bahis kutusundaki miktarı koru</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="betPersistence" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
