@@ -11,31 +11,31 @@ SharpXch sitesinde iyileştirmeler yapan,  maç istatistiklerine hızlı erişim
 
 - Bahis miktarlarınızı koruma (oran değiştiğinde kaybolmaz)
 
-![Uygulama Ekran Görüntüsü](screenshots/price.gif)
+![Uygulama Ekran Görüntüsü](screenshots/priceloop.gif)
 
 - Ayarları gizleme/gösterme butonu
 
-![Uygulama Ekran Görüntüsü](screenshots/toggle.gif)
+![Uygulama Ekran Görüntüsü](screenshots/toggleloop.gif)
 
 ## Kurulum
 
-1. Projeyi indirin veya klonlayın
-2. Chrome'da `chrome://extensions/` adresine gidin
-3. Sağ üstten "Geliştirici modu"nu açın
-4. "Paketlenmemiş öğe yükle" butonuna tıklayın
-5. İndirdiğiniz klasörü seçin
+1. Projeyi indirin veya klonlayın.
+2. Chrome'da `chrome://extensions/` adresine gidin.
+3. Sağ üstten "Geliştirici modu"nu açın.
+4. "Paketlenmemiş öğe yükle" butonuna tıklayın.
+5. İndirdiğiniz klasörü seçin.
 
 ## Kullanım
 
 **SofaScore Linkleri:**
-- Herhangi bir maç sayfasını açın
-- SofaScore logosu otomatik görünecektir
-- Logoya tıklayarak maç detaylarına gidin
+- Herhangi bir maç sayfasını açın.
+- SofaScore logosu otomatik görünecektir.
+- Logoya tıklayarak maç detaylarına gidin.
 
 **Bahis Miktarı Koruma:**
-- Eklenti simgesine tıklayın
-- "Bahis Miktarlarını Koru" seçeneğini açın
-- Girdiğiniz miktarlar artık korunacaktır
+- Eklenti simgesine tıklayın.
+- "Bahis Miktarlarını Koru" seçeneğini açın.
+- Girdiğiniz miktar artık oran değiştirseniz bile korunacaktır.
 
 **Ayarları Gizleme:**
 - Ayarlar bölümünde sağ üstteki +/- butonunu kullanın
