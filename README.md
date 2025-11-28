@@ -9,8 +9,12 @@ Bu eklenti SharpXch sitesindeki her maçın yanına SofaScore linki ekler. Böyl
 ## Özellikler
 
 - Her maç için otomatik SofaScore linki
+![Uygulama Ekran Görüntüsü](screenshots/1.png)
+![Uygulama Ekran Görüntüsü](screenshots/4.png)
+
 - Bahis miktarlarınızı koruma (oran değiştiğinde kaybolmaz)
 - Ayarları gizleme/gösterme butonu
+![Uygulama Ekran Görüntüsü](screenshots/toggle.gif)
 
 ## Kurulum
 
