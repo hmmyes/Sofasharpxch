@@ -1,10 +1,6 @@
 # SharpXch SofaScore Linker
 
-SharpXch platformunda maç istatistiklerine hızlı erişim sağlayan Chrome eklentisi.
-
-## Nedir?
-
-Bu eklenti SharpXch sitesindeki her maçın yanına SofaScore linki ekler. Böylece detaylı maç istatistiklerine tek tıkla ulaşabilirsiniz.
+SharpXch sitesinde iyileştirmeler yapan,  maç istatistiklerine hızlı erişim sağlayarak vakit kazandırmayı amaçlayan bir chrome eklentisidir.
 
 ## Özellikler
 
@@ -14,6 +10,9 @@ Bu eklenti SharpXch sitesindeki her maçın yanına SofaScore linki ekler. Böyl
 ![Uygulama Ekran Görüntüsü](screenshots/4.png)
 
 - Bahis miktarlarınızı koruma (oran değiştiğinde kaybolmaz)
+
+![Uygulama Ekran Görüntüsü](screenshots/price.gif)
+
 - Ayarları gizleme/gösterme butonu
 
 ![Uygulama Ekran Görüntüsü](screenshots/toggle.gif)
